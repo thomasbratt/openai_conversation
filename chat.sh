@@ -31,21 +31,22 @@ generate(){
                 "presence_penalty": 0.6,
                 "stop": [" Human:", " AI:"]
             }'                                              \
-    | tr '[:space:]' ' '
+        | tr '[:space:]' ' '
 }
 
 generate_and_download(){
     local prompt="${1}"
     local size="${2}"
     local response
-    response="$(generate "${prompt}" ${size})"                                      || return $?
-    jq '.choices[0].text' <<< "${response}"                                         || return $?
+    response="$(generate "${prompt}" ${size})"                              || return $?
+    response_text="$(jq '.choices[0].text' <<< "${response}")"              || return $?
+    sed -E -e 's/^"//' -e 's/"$//' -e 's/^(\\n)+//' <<< "${response_text}"  || return $?
 }
 
 main(){
     local text
-    check_arguments         "$#" "$0"                                               || return $? 
-    text="$(generate_and_download "$1" "$2")"                                       || return $?
+    check_arguments "$#" "$0"                                               || return $? 
+    text="$(generate_and_download "${1}" "${2}")"                           || return $?
     printf "${text}"
 }
 
