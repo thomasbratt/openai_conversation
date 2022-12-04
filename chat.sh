@@ -7,6 +7,7 @@
 # -----------------------------------------------------------------------------
 
 OPENAI_API_KEY="$(<api.key)"
+MODEL_ID='text-davinci-003'
 
 check_arguments(){
     if [[ ${1} -ne 1 ]]; then
@@ -23,7 +24,7 @@ generate(){
         -H "Authorization: Bearer ${OPENAI_API_KEY}"        \
         -d '{
                 "prompt": "'"${prompt}"'",
-                "model": "text-davinci-002",
+                "model": "'"${MODEL_ID}"'",
                 "temperature": 0.9,
                 "max_tokens": 150,
                 "top_p": 1,
